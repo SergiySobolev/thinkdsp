@@ -11,6 +11,8 @@ import scipy.fftpack
 import scipy.stats
 
 import thinkplot
+from iwave.IWave import IWave
+from iwave.IWaveFactory import IWaveFactory
 
 try:
     from IPython.display import Audio
@@ -23,6 +25,9 @@ PI2 = math.pi * 2
 
 class Signal:
     """Represents a time-varying signal."""
+
+    def __init__(self):
+        self.wave_factory = WaveFactory()
 
     def __add__(self, other):
         """Adds two signals.
@@ -72,7 +77,7 @@ class Signal:
         n = round(duration * framerate)
         ts = start + np.arange(n) / framerate
         ys = self.evaluate(ts)
-        return Wave(ys, ts, framerate=framerate)
+        return Wave(ys, ts, frame_rate=framerate)
 
 
 class SumSignal(Signal):
@@ -83,6 +88,7 @@ class SumSignal(Signal):
 
         args: tuple of signals
         """
+        super().__init__()
         self.signals = args
 
     @property
@@ -120,6 +126,7 @@ class Sinusoid(Signal):
         offset: float phase offset in radians
         func: function that maps phase to amplitude
         """
+        super().__init__()
         self.freq = freq
         self.amp = amp
         self.offset = offset
@@ -436,7 +443,7 @@ class Spectrum(_SpectrumParent):
         # we transform back; we could fix that by saving start
         # time in the Spectrum
         # ts = self.start + np.arange(len(ys)) / self.framerate
-        return Wave(ys, framerate=self.framerate)
+        return Wave(ys, frame_rate=self.framerate)
 
 
 class IntegratedSpectrum:
@@ -518,20 +525,34 @@ class Dct(_SpectrumParent):
         return Wave(ys, framerate=self.framerate)
 
 
-class Wave:
+class WaveFactory(IWaveFactory):
+
+    def create_wave(self, ys, ts=None, frame_rate=None):
+        return Wave(ys, ts, frame_rate)
+
+    def create_wave_sbk(self, ys, ts=None, frame_rate=None):
+        return Wave(ys, ts, frame_rate)
+
+
+WAVE_FACTORY = WaveFactory()
+
+
+class Wave(IWave):
     """Represents a discrete-time waveform.
 
     """
 
-    def __init__(self, ys, ts=None, framerate=None):
+    def __init__(self, ys, ts=None, frame_rate=None):
         """Initializes the wave.
 
         ys: wave array
         ts: array of times
         framerate: samples per second
         """
+        super().__init__(ys, ts, frame_rate)
         self.ys = np.asanyarray(ys)
-        self.framerate = framerate if framerate is not None else 11025
+        self.framerate = frame_rate if frame_rate is not None else 11025
+        self.wave_factory = WaveFactory()
 
         if ts is None:
             self.ts = np.arange(len(ys)) / self.framerate
@@ -599,7 +620,7 @@ class Wave:
         add_ys(self)
         add_ys(other)
 
-        return Wave(ys, ts, self.framerate)
+        return self.wave_factory.create_wave(ys, ts, self.framerate)
 
     __radd__ = __add__
 
@@ -615,7 +636,7 @@ class Wave:
 
         ys = np.concatenate((self.ys, other.ys))
         # ts = np.arange(len(ys)) / self.framerate
-        return Wave(ys, framerate=self.framerate)
+        return self.wave_factory.create_wave(ys, frame_rate=self.framerate)
 
     def __mul__(self, other):
         """Multiplies two waves elementwise.
@@ -632,7 +653,7 @@ class Wave:
         assert len(self) == len(other)
 
         ys = self.ys * other.ys
-        return Wave(ys, self.ts, self.framerate)
+        return self.wave_factory.create_wave(ys, self.ts, self.framerate)
 
     def max_diff(self, other):
         """Computes the maximum absolute difference between waves.
@@ -665,7 +686,7 @@ class Wave:
 
         ys = np.convolve(self.ys, window, mode='full')
         # ts = np.arange(len(ys)) / self.framerate
-        return Wave(ys, framerate=self.framerate)
+        return self.wave_factory.create_wave(ys, framerate=self.framerate)
 
     def diff(self):
         """Computes the difference between successive elements.
@@ -674,7 +695,7 @@ class Wave:
         """
         ys = np.diff(self.ys)
         ts = self.ts[1:].copy()
-        return Wave(ys, ts, self.framerate)
+        return self.wave_factory.create_wave(ys, ts, self.framerate)
 
     def cumsum(self):
         """Computes the cumulative sum of the elements.
@@ -683,7 +704,7 @@ class Wave:
         """
         ys = np.cumsum(self.ys)
         ts = self.ts.copy()
-        return Wave(ys, ts, self.framerate)
+        return self.wave_factory.create_wave(ys, ts, self.framerate)
 
     def quantize(self, bound, dtype):
         """Maps the waveform to quanta.
@@ -799,7 +820,7 @@ class Wave:
         """
         ys = self.ys[i:j].copy()
         ts = self.ts[i:j].copy()
-        return Wave(ys, ts, self.framerate)
+        return self.wave_factory.create_wave(ys, ts, self.framerate)
 
     def make_spectrum(self, full=False):
         """Computes the spectrum using FFT.
@@ -1154,7 +1175,7 @@ def read_wave(filename='sound.wav'):
         ys = ys[::2]
 
     # ts = np.arange(len(ys)) / framerate
-    wave = Wave(ys, framerate=framerate)
+    wave = Wave(ys, frame_rate=framerate)
     wave.normalize()
     return wave
 
