@@ -1,6 +1,6 @@
 import unittest
 
-import sbkdsp
+from com.sbk.dsp import sbkdsp
 
 
 class SinusWaveTest(unittest.TestCase):
@@ -19,3 +19,11 @@ class SinusWaveTest(unittest.TestCase):
     def test_len_of_sin_wave_have_to_be_72000(self):
         l = len(self.sinus_wave)
         self.assertEqual(l, 72000, "Length sinus wave have to equal 72 000")
+
+    def test_time_array(self):
+        l = len(self.sinus_wave)
+        self.assertEqual(l, 72000, "Length sinus wave have to equal 72 000")
+
+
+if __name__ == '__main__':
+    unittest.main()
