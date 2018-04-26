@@ -11,8 +11,8 @@ import scipy.fftpack
 import scipy.stats
 
 import thinkplot
-from iwave.IWave import IWave
-from iwave.IWaveFactory import IWaveFactory
+from com.sbk.wave.IWave import IWave
+from com.sbk.wave.IWaveFactory import IWaveFactory
 
 try:
     from IPython.display import Audio
@@ -62,10 +62,10 @@ class Signal:
         framerate: samples per second
         """
         duration = self.period * periods
-        wave = self.make_wave(duration, start=0, framerate=framerate)
+        wave = self.make_wave(duration, start=0, frame_rate=framerate)
         wave.plot()
 
-    def make_wave(self, duration=1, start=0, framerate=11025):
+    def make_wave(self, duration=1, start=0, frame_rate=11025):
         """Makes a Wave object.
 
         duration: float seconds
@@ -74,10 +74,10 @@ class Signal:
 
         returns: Wave
         """
-        n = round(duration * framerate)
-        ts = start + np.arange(n) / framerate
+        n = round(duration * frame_rate)
+        ts = start + np.arange(n) / frame_rate
         ys = self.evaluate(ts)
-        return Wave(ys, ts, frame_rate=framerate)
+        return self.wave_factory.create_wave(ys, ts, frame_rate=frame_rate)
 
 
 class SumSignal(Signal):
@@ -1022,7 +1022,7 @@ class WavFileWriter:
         self.fp.close()
 
 
-def cosSignal(freq=440, amp=1.0, offset=0):
+def cos_signal(freq=440, amp=1.0, offset=0):
     """Makes a cosine Sinusoid.
 
     freq: float frequency in Hz
@@ -1034,7 +1034,7 @@ def cosSignal(freq=440, amp=1.0, offset=0):
     return Sinusoid(freq, amp, offset, func=np.cos)
 
 
-def sinSignal(freq=440, amp=1.0, offset=0):
+def sin_signal(freq=440, amp=1.0, offset=0):
     """Makes a sine Sinusoid.
 
     freq: float frequency in Hz
