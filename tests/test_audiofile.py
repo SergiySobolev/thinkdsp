@@ -17,6 +17,7 @@ class AudioFileTest(unittest.TestCase):
             .make_wave(duration=test_duration,
                        frame_rate=test_frame_rate)
 
+    @unittest.skip("Just for running from IDE")
     def test_write_to_file(self):
         self.sinus_wave.scale(5000)
         AudioFile.write_wave_to_out_file(self.sinus_wave)
