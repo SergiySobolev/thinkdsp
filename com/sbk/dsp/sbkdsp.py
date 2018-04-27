@@ -551,11 +551,11 @@ class Wave(IWave):
         """
         super().__init__(ys, ts, frame_rate)
         self.ys = np.asanyarray(ys)
-        self.framerate = frame_rate if frame_rate is not None else 11025
+        self.frame_rate = frame_rate if frame_rate is not None else 11025
         self.wave_factory = WaveFactory()
 
         if ts is None:
-            self.ts = np.arange(len(ys)) / self.framerate
+            self.ts = np.arange(len(ys)) / self.frame_rate
         else:
             self.ts = np.asanyarray(ts)
 
@@ -583,7 +583,7 @@ class Wave(IWave):
 
         returns: float duration in seconds
         """
-        return len(self.ys) / self.framerate
+        return len(self.ys) / self.frame_rate
 
     def __add__(self, other):
         """Adds two waves elementwise.
@@ -595,14 +595,14 @@ class Wave(IWave):
         if other == 0:
             return self
 
-        assert self.framerate == other.framerate
+        assert self.frame_rate == other.framerate
 
         # make an array of times that covers both waves
         start = min(self.start, other.start)
         end = max(self.end, other.end)
-        n = int(round((end - start) * self.framerate)) + 1
+        n = int(round((end - start) * self.frame_rate)) + 1
         ys = np.zeros(n)
-        ts = start + np.arange(n) / self.framerate
+        ts = start + np.arange(n) / self.frame_rate
 
         def add_ys(wave):
             i = find_index(wave.start, ts)
@@ -620,7 +620,7 @@ class Wave(IWave):
         add_ys(self)
         add_ys(other)
 
-        return self.wave_factory.create_wave(ys, ts, self.framerate)
+        return self.wave_factory.create_wave(ys, ts, self.frame_rate)
 
     __radd__ = __add__
 
@@ -631,12 +631,12 @@ class Wave(IWave):
 
         returns: new Wave
         """
-        if self.framerate != other.framerate:
+        if self.frame_rate != other.framerate:
             raise ValueError('Wave.__or__: framerates do not agree')
 
         ys = np.concatenate((self.ys, other.ys))
         # ts = np.arange(len(ys)) / self.framerate
-        return self.wave_factory.create_wave(ys, frame_rate=self.framerate)
+        return self.wave_factory.create_wave(ys, frame_rate=self.frame_rate)
 
     def __mul__(self, other):
         """Multiplies two waves elementwise.
@@ -649,11 +649,11 @@ class Wave(IWave):
         returns: new Wave
         """
         # the spectrums have to have the same framerate and duration
-        assert self.framerate == other.framerate
+        assert self.frame_rate == other.framerate
         assert len(self) == len(other)
 
         ys = self.ys * other.ys
-        return self.wave_factory.create_wave(ys, self.ts, self.framerate)
+        return self.wave_factory.create_wave(ys, self.ts, self.frame_rate)
 
     def max_diff(self, other):
         """Computes the maximum absolute difference between waves.
@@ -662,7 +662,7 @@ class Wave(IWave):
 
         returns: float
         """
-        assert self.framerate == other.framerate
+        assert self.frame_rate == other.framerate
         assert len(self) == len(other)
 
         ys = self.ys - other.ys
@@ -679,14 +679,14 @@ class Wave(IWave):
         returns: Wave
         """
         if isinstance(other, Wave):
-            assert self.framerate == other.framerate
+            assert self.frame_rate == other.frame_rate
             window = other.ys
         else:
             window = other
 
         ys = np.convolve(self.ys, window, mode='full')
         # ts = np.arange(len(ys)) / self.framerate
-        return self.wave_factory.create_wave(ys, framerate=self.framerate)
+        return self.wave_factory.create_wave(ys, framerate=self.frame_rate)
 
     def diff(self):
         """Computes the difference between successive elements.
@@ -695,7 +695,7 @@ class Wave(IWave):
         """
         ys = np.diff(self.ys)
         ts = self.ts[1:].copy()
-        return self.wave_factory.create_wave(ys, ts, self.framerate)
+        return self.wave_factory.create_wave(ys, ts, self.frame_rate)
 
     def cumsum(self):
         """Computes the cumulative sum of the elements.
@@ -704,7 +704,7 @@ class Wave(IWave):
         """
         ys = np.cumsum(self.ys)
         ts = self.ts.copy()
-        return self.wave_factory.create_wave(ys, ts, self.framerate)
+        return self.wave_factory.create_wave(ys, ts, self.frame_rate)
 
     def quantize(self, bound, dtype):
         """Maps the waveform to quanta.
@@ -725,7 +725,7 @@ class Wave(IWave):
         denom: float fraction of the segment to taper
         duration: float duration of the taper in seconds
         """
-        self.ys = apodize(self.ys, self.framerate, denom, duration)
+        self.ys = apodize(self.ys, self.frame_rate, denom, duration)
 
     def hamming(self):
         """Apply a Hamming window to the wave.
@@ -773,7 +773,7 @@ class Wave(IWave):
         n: integer index
         """
         self.ys = zero_pad(self.ys, n)
-        self.ts = self.start + np.arange(n) / self.framerate
+        self.ts = self.start + np.arange(n) / self.frame_rate
 
     def normalize(self, amp=1.0):
         """Normalizes the signal to the given amplitude.
@@ -820,7 +820,7 @@ class Wave(IWave):
         """
         ys = self.ys[i:j].copy()
         ts = self.ts[i:j].copy()
-        return self.wave_factory.create_wave(ys, ts, self.framerate)
+        return self.wave_factory.create_wave(ys, ts, self.frame_rate)
 
     def make_spectrum(self, full=False):
         """Computes the spectrum using FFT.
@@ -828,7 +828,7 @@ class Wave(IWave):
         returns: Spectrum
         """
         n = len(self.ys)
-        d = 1 / self.framerate
+        d = 1 / self.frame_rate
 
         if full:
             hs = np.fft.fft(self.ys)
@@ -837,7 +837,7 @@ class Wave(IWave):
             hs = np.fft.rfft(self.ys)
             fs = np.fft.rfftfreq(n, d)
 
-        return Spectrum(hs, fs, self.framerate, full)
+        return Spectrum(hs, fs, self.frame_rate, full)
 
     def make_dct(self):
         """Computes the DCT of this wave.
@@ -845,7 +845,7 @@ class Wave(IWave):
         N = len(self.ys)
         hs = scipy.fftpack.dct(self.ys, type=2)
         fs = (0.5 + np.arange(N)) / 2
-        return Dct(hs, fs, self.framerate)
+        return Dct(hs, fs, self.frame_rate)
 
     def make_spectrogram(self, seg_length, win_flag=True):
         """Computes the spectrogram of the wave.
@@ -960,7 +960,7 @@ class Wave(IWave):
         filename: string
         """
         print('Writing', filename)
-        wfile = WavFileWriter(filename, self.framerate)
+        wfile = WavFileWriter(filename, self.frame_rate)
         wfile.write(self)
         wfile.close()
 
@@ -975,7 +975,7 @@ class Wave(IWave):
     def make_audio(self):
         """Makes an IPython Audio object.
         """
-        audio = Audio(data=self.ys.real, rate=self.framerate)
+        audio = Audio(data=self.ys.real, rate=self.frame_rate)
         return audio
 
 
