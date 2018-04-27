@@ -43,7 +43,15 @@ class SinusWaveTest(unittest.TestCase):
     def test_duration_have_to_be_3(self):
         self.assertEqual(self.sinus_wave.duration, 3,  "Duration have to be almost 3")
 
+    def test_shifted_by_1_wave_start_ts_have_to_be_1(self):
+        shifted_wave = self.sinus_wave.copy()
+        shifted_wave.shift(1)
+        self.assertEqual(shifted_wave.start, 1, "First time stamp element have to be 1")
 
+    def test_shifted_by_1_wave_end_ts_have_to_be_4(self):
+        shifted_wave = self.sinus_wave.copy()
+        shifted_wave.shift(1)
+        self.assertAlmostEqual(shifted_wave.end, 3.9999583333333333, 7,  "End time stamp element have to be 4")
 
 if __name__ == '__main__':
     unittest.main()

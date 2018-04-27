@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 
 import math
+import copy
 import subprocess
 import warnings
 from wave import open as open_wave
@@ -686,7 +687,7 @@ class Wave(IWave):
 
         ys = np.convolve(self.ys, window, mode='full')
         # ts = np.arange(len(ys)) / self.framerate
-        return self.wave_factory.create_wave(ys, framerate=self.frame_rate)
+        return self.wave_factory.create_wave(ys, frame_rate=self.frame_rate)
 
     def diff(self):
         """Computes the difference between successive elements.
