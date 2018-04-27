@@ -20,9 +20,19 @@ class SinusWaveTest(unittest.TestCase):
         l = len(self.sinus_wave)
         self.assertEqual(l, 72000, "Length sinus wave have to equal 72 000")
 
-    def test_time_array(self):
-        l = len(self.sinus_wave)
-        self.assertEqual(l, 72000, "Length sinus wave have to equal 72 000")
+    def test_time_array_len_have_to_be_72000(self):
+        l = len(self.sinus_wave.ts)
+        self.assertEqual(l, 72000, "Sinus wave time stamp array len have to equal 72 000")
+
+    def test_time_array_first_values(self):
+        ts0 = self.sinus_wave.ts[0]
+        self.assertEqual(ts0, 0, "First time stamp element have to be 0")
+        ts_1 = self.sinus_wave.ts[1]
+        self.assertAlmostEqual(ts_1, 0.000041667, 5, "Second time stamp element have to be 1/24000")
+        ts_2 = self.sinus_wave.ts[2]
+        self.assertAlmostEqual(ts_2, 0.000083333, 5, "Third time stamp element have to be 2/24000")
+        ts_last = self.sinus_wave.ts[71999]
+        self.assertAlmostEqual(ts_last, 2.999958333, 5, "Last time stamp element have to be 2/24000")
 
 
 if __name__ == '__main__':
