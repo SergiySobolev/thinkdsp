@@ -535,7 +535,17 @@ class WaveFactory(IWaveFactory):
         return Wave(ys, ts, frame_rate)
 
 
-WAVE_FACTORY = WaveFactory()
+class SilentSignal(Signal):
+    """Represents silence."""
+
+    def evaluate(self, ts):
+        """Evaluates the signal at the given times.
+
+        ts: float array of times
+
+        returns: float wave array
+        """
+        return np.zeros(len(ts))
 
 
 class Wave(IWave):
@@ -1057,19 +1067,6 @@ def sinc(freq=440, amp=1.0, offset=0):
     returns: Sinusoid object
     """
     return Sinusoid(freq, amp, offset, func=np.sinc)
-
-
-class SilentSignal(Signal):
-    """Represents silence."""
-
-    def evaluate(self, ts):
-        """Evaluates the signal at the given times.
-
-        ts: float array of times
-
-        returns: float wave array
-        """
-        return np.zeros(len(ts))
 
 
 def quantize(ys, bound, dtype):

@@ -12,6 +12,3 @@ class EmptyWaveTest(unittest.TestCase):
         l = len(self.empty_wave)
         self.assertEqual(l, 0, "Length of empty wave have to be 0")
 
-
-if __name__ == '__main__':
-    unittest.main()

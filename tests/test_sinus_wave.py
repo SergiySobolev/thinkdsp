@@ -53,5 +53,21 @@ class SinusWaveTest(unittest.TestCase):
         shifted_wave.shift(1)
         self.assertAlmostEqual(shifted_wave.end, 3.9999583333333333, 7,  "End time stamp element have to be 4")
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_ys_first_values(self):
+        ys_0 = self.sinus_wave.ys[0]
+        self.assertAlmostEqual(ys_0, 0, 7, "First wave element have to be zero")
+        ys_1 = self.sinus_wave.ys[1]
+        self.assertAlmostEqual(ys_1, 0.228350870, 7, "Second wave element have to be about 0.22835")
+        ys_2 = self.sinus_wave.ys[2]
+        self.assertAlmostEqual(ys_2, 0.444635179, 7, "Third wave element have to be about 0.444635179")
+
+    def test_scaled_by_3_ys_first_values(self):
+        scaled_wave = self.sinus_wave.copy()
+        scaled_wave.scale(3)
+        ys_0 = scaled_wave.ys[0]
+        self.assertAlmostEqual(ys_0, 0, 7, "First wave element have to be zero")
+        ys_1 = scaled_wave.ys[1]
+        self.assertAlmostEqual(ys_1, 0.685052610331, 7, "Second wave element have to be about 0.22835")
+        ys_2 = scaled_wave.ys[2]
+        self.assertAlmostEqual(ys_2, 1.33390553755, 7, "Third wave element have to be about 0.444635179")
+
