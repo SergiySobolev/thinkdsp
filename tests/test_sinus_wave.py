@@ -40,6 +40,9 @@ class SinusWaveTest(unittest.TestCase):
     def test_end_ts_have_to_be_3(self):
         self.assertAlmostEqual(self.sinus_wave.end, 2.999958333, 5, "Last time stamp element have to be almost 3")
 
+    def test_duration_have_to_be_3(self):
+        self.assertEqual(self.sinus_wave.duration, 3,  "Duration have to be almost 3")
+
 
 
 if __name__ == '__main__':
