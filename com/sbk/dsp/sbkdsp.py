@@ -547,7 +547,7 @@ class Wave(IWave):
 
         ys: wave array
         ts: array of times
-        framerate: samples per second
+        frame_rate: samples per second
         """
         super().__init__(ys, ts, frame_rate)
         self.ys = np.asanyarray(ys)
