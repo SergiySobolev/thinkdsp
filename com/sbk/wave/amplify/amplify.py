@@ -20,7 +20,7 @@ def do_amplification(in_file, out_file, amplification_factor):
     while fin.tell() < num_frames:
         frame_data = fin.read(1)
         for data in frame_data:
-            out_frame = transform(data, amplification_factor)
+            out_frame = transform(int(data * amplification_factor))
             fout.write(out_frame)
 
     fout.close()

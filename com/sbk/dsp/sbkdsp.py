@@ -12,8 +12,8 @@ import scipy.fftpack
 import scipy.stats
 
 import thinkplot
-from com.sbk.wave.IWave import IWave
-from com.sbk.wave.IWaveFactory import IWaveFactory
+from com.sbk.wave.iwave import IWave
+from com.sbk.wave.iwavefactory import IWaveFactory
 
 try:
     from IPython.display import Audio
@@ -55,7 +55,7 @@ class Signal:
         """
         return 0.1
 
-    def plot(self, framerate=11025, periods=3):
+    def plot(self, frame_rate=11025, periods=3):
         """Plots the signal.
 
         The default behavior is to plot three periods.
@@ -63,7 +63,7 @@ class Signal:
         framerate: samples per second
         """
         duration = self.period * periods
-        wave = self.make_wave(duration, start=0, frame_rate=framerate)
+        wave = self.make_wave(duration, start=0, frame_rate=frame_rate)
         wave.plot()
 
     def make_wave(self, duration=1, start=0, frame_rate=11025):
@@ -523,7 +523,7 @@ class Dct(_SpectrumParent):
         # NOTE: whatever the start time was, we lose it when
         # we transform back
         # ts = self.start + np.arange(len(ys)) / self.framerate
-        return Wave(ys, framerate=self.framerate)
+        return Wave(ys, frame_rate=self.frame_rate)
 
 
 class WaveFactory(IWaveFactory):

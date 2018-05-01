@@ -1,7 +1,6 @@
 import unittest
 
 from com.sbk.dsp import sbkdsp
-from com.sbk.wave.amplify.audiofile import AudioFile
 
 
 class AudioFileTest(unittest.TestCase):
@@ -20,4 +19,6 @@ class AudioFileTest(unittest.TestCase):
     @unittest.skip("Just for running from IDE")
     def test_write_to_file(self):
         self.sinus_wave.scale(5000)
-        AudioFile.write_wave_to_out_file(self.sinus_wave)
+        self.sinus_wave.make_audio()
+        self.sinus_wave.scale(10)
+        self.sinus_wave.make_audio()
