@@ -526,6 +526,101 @@ class Dct(_SpectrumParent):
         return Wave(ys, frame_rate=self.frame_rate)
 
 
+class Spectrogram:
+    """Represents the spectrum of a signal."""
+
+    def __init__(self, spec_map, seg_length):
+        """Initialize the spectrogram.
+
+        spec_map: map from float time to Spectrum
+        seg_length: number of samples in each segment
+        """
+        self.spec_map = spec_map
+        self.seg_length = seg_length
+
+    def any_spectrum(self):
+        """Returns an arbitrary spectrum from the spectrogram."""
+        index = next(iter(self.spec_map))
+        return self.spec_map[index]
+
+    @property
+    def time_res(self):
+        """Time resolution in seconds."""
+        spectrum = self.any_spectrum()
+        return float(self.seg_length) / spectrum.framerate
+
+    @property
+    def freq_res(self):
+        """Frequency resolution in Hz."""
+        return self.any_spectrum().freq_res
+
+    def times(self):
+        """Sorted sequence of times.
+
+        returns: sequence of float times in seconds
+        """
+        ts = sorted(iter(self.spec_map))
+        return ts
+
+    def frequencies(self):
+        """Sequence of frequencies.
+
+        returns: sequence of float freqencies in Hz.
+        """
+        fs = self.any_spectrum().fs
+        return fs
+
+    def plot(self, high=None, **options):
+        """Make a pseudocolor plot.
+
+        high: highest frequency component to plot
+        """
+        fs = self.frequencies()
+        i = None if high is None else find_index(high, fs)
+        fs = fs[:i]
+        ts = self.times()
+
+        # make the array
+        size = len(fs), len(ts)
+        array = np.zeros(size, dtype=np.float)
+
+        # copy amplitude from each spectrum into a column of the array
+        for j, t in enumerate(ts):
+            spectrum = self.spec_map[t]
+            array[:, j] = spectrum.amps[:i]
+
+        thinkplot.pcolor(ts, fs, array, **options)
+
+    def make_wave(self):
+        """Inverts the spectrogram and returns a Wave.
+
+        returns: Wave
+        """
+        res = []
+        for t, spectrum in sorted(self.spec_map.items()):
+            wave = spectrum.make_wave()
+            n = len(wave)
+
+            window = 1 / np.hamming(n)
+            wave.window(window)
+
+            i = wave.find_index(t)
+            start = i - n // 2
+            end = start + n
+            res.append((start, end, wave))
+
+        starts, ends, waves = zip(*res)
+        low = min(starts)
+        high = max(ends)
+
+        ys = np.zeros(high - low, np.float)
+        for start, end, wave in res:
+            ys[start:end] = wave.ys
+
+        # ts = np.arange(len(ys)) / self.framerate
+        return Wave(ys, frame_rate=wave.frame_rate)
+
+
 class WaveFactory(IWaveFactory):
 
     def create_wave(self, ys, ts=None, frame_rate=None):

@@ -27,5 +27,3 @@ class SbkWaveTest(unittest.TestCase):
     def test_ts_duration_have_to_be_6_000_after_stretch_with_factor_2(self):
         self.assertAlmostEqual(self.stretched_wave.ts_duration, 5.9999, 4, "Duration of stretched with stretch_factor=2 have to be close to 5.999")
 
-    def test_should_double_ts_when_stretch_with_factor_2(self):
-        self.assertEqual(len(self.stretched_wave), 72000, "Length sinus wave have to equal 72 000")
