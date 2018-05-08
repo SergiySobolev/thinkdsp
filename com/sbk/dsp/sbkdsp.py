@@ -14,6 +14,7 @@ import scipy.stats
 import thinkplot
 from com.sbk.wave.iwave import IWave
 from com.sbk.wave.iwavefactory import IWaveFactory
+from com.sbk.func.unbias.unbias import unbias
 
 try:
     from IPython.display import Audio
