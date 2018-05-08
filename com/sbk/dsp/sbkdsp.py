@@ -6,8 +6,10 @@ from wave import open as open_wave
 
 import numpy as np
 
+from com.sbk.converter.converter import signal_to_wave
 from com.sbk.dsp.constants import PI2
 from com.sbk.func.unbias.unbias import unbias
+from com.sbk.signal.signal import SilentSignal
 from com.sbk.wave.wave import Wave
 from com.sbk.wave.wave_factory import WaveFactory
 
@@ -18,182 +20,11 @@ except:
                   "Wave.make_audio() will not work.")
 
 
-class Signal:
-    """Represents a time-varying signal."""
-
-    def __init__(self):
-        self.wave_factory = WaveFactory()
-
-    def __add__(self, other):
-        """Adds two signals.
-
-        other: Signal
-
-        returns: Signal
-        """
-        if other == 0:
-            return self
-        return SumSignal(self, other)
-
-    __radd__ = __add__
-
-    @property
-    def period(self):
-        """Period of the signal in seconds (property).
-
-        Since this is used primarily for purposes of plotting,
-        the default behavior is to return a value, 0.1 seconds,
-        that is reasonable for many signals.
-
-        returns: float seconds
-        """
-        return 0.1
-
-    def plot(self, frame_rate=11025, periods=3):
-        """Plots the signal.
-
-        The default behavior is to plot three periods.
-
-        framerate: samples per second
-        """
-        duration = self.period * periods
-        wave = self.make_wave(duration, start=0, frame_rate=frame_rate)
-        wave.plot()
-
-    def make_wave(self, duration=1, start=0, frame_rate=11025):
-        """Makes a Wave object.
-
-        duration: float seconds
-        start: float seconds
-        framerate: int frames per second
-
-        returns: Wave
-        """
-        n = round(duration * frame_rate)
-        ts = start + np.arange(n) / frame_rate
-        ys = self.evaluate(ts)
-        return Wave(ys, ts, frame_rate=frame_rate)
 
 
-class SumSignal(Signal):
-    """Represents the sum of signals."""
-
-    def __init__(self, *args):
-        """Initializes the sum.
-
-        args: tuple of signals
-        """
-        super().__init__()
-        self.signals = args
-
-    @property
-    def period(self):
-        """Period of the signal in seconds.
-
-        Note: this is not correct; it's mostly a placekeeper.
-
-        But it is correct for a harmonic sequence where all
-        component frequencies are multiples of the fundamental.
-
-        returns: float seconds
-        """
-        return max(sig.period for sig in self.signals)
-
-    def evaluate(self, ts):
-        """Evaluates the signal at the given times.
-
-        ts: float array of times
-
-        returns: float wave array
-        """
-        ts = np.asarray(ts)
-        return sum(sig.evaluate(ts) for sig in self.signals)
 
 
-class Sinusoid(Signal):
-    """Represents a sinusoidal signal."""
 
-    def __init__(self, freq=440, amp=1.0, offset=0, func=np.sin):
-        """Initializes a sinusoidal signal.
-
-        freq: float frequency in Hz
-        amp: float amplitude, 1.0 is nominal max
-        offset: float phase offset in radians
-        func: function that maps phase to amplitude
-        """
-        super().__init__()
-        self.freq = freq
-        self.amp = amp
-        self.offset = offset
-        self.func = func
-
-    @property
-    def period(self):
-        """Period of the signal in seconds.
-
-        returns: float seconds
-        """
-        return 1.0 / self.freq
-
-    def evaluate(self, ts):
-        """Evaluates the signal at the given times.
-
-        ts: float array of times
-
-        returns: float wave array
-        """
-        ts = np.asarray(ts)
-        phases = PI2 * self.freq * ts + self.offset
-        ys = self.amp * self.func(phases)
-        return ys
-
-
-class SilentSignal(Signal):
-    """Represents silence."""
-
-    def evaluate(self, ts):
-        """Evaluates the signal at the given times.
-
-        ts: float array of times
-
-        returns: float wave array
-        """
-        return np.zeros(len(ts))
-
-def cos_signal(freq=440, amp=1.0, offset=0):
-    """Makes a cosine Sinusoid.
-
-    freq: float frequency in Hz
-    amp: float amplitude, 1.0 is nominal max
-    offset: float phase offset in radians
-
-    returns: Sinusoid object
-    """
-    return Sinusoid(freq, amp, offset, func=np.cos)
-
-
-def sin_signal(freq=440, amp=1.0, offset=0):
-    """Makes a sine Sinusoid.
-
-    freq: float frequency in Hz
-    amp: float amplitude, 1.0 is nominal max
-    offset: float phase offset in radians
-
-    returns: Sinusoid object
-    """
-    return Sinusoid(freq, amp, offset, func=np.sin)
-
-
-def sinc(freq=440, amp=1.0, offset=0):
-    """Makes a Sinc function.
-
-    freq: float frequency in Hz
-    amp: float amplitude, 1.0 is nominal max
-    offset: float phase offset in radians
-
-    returns: Sinusoid object
-    """
-    return Sinusoid(freq, amp, offset, func=np.sinc)
 
 
 
@@ -206,7 +37,7 @@ def rest(duration):
     returns: Wave
     """
     signal = SilentSignal()
-    wave = signal.make_wave(duration)
+    wave = signal_to_wave(signal, duration)
     return wave
 
 

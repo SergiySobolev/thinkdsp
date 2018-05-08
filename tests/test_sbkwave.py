@@ -1,6 +1,7 @@
 import unittest
 
-from com.sbk.dsp import sbkdsp
+from com.sbk.converter.converter import signal_to_wave
+from com.sbk.func.trigonometry.trigonometry import sin_signal
 from com.sbk.wave.sbkwave import SbkWave
 
 
@@ -12,11 +13,10 @@ class SbkWaveTest(unittest.TestCase):
         test_sinus_offset = 0
         test_frame_rate = 24000
         test_duration = 3
-        self.base_sinus_wave = sbkdsp.sin_signal(freq=test_sinus_freq,
+        self.base_sinus_signal = sin_signal(freq=test_sinus_freq,
                                             amp=test_sinus_amp,
-                                            offset=test_sinus_offset) \
-            .make_wave(duration=test_duration,
-                       frame_rate=test_frame_rate)
+                                            offset=test_sinus_offset)
+        self.base_sinus_wave = signal_to_wave(self.base_sinus_signal, duration=test_duration, frame_rate=test_frame_rate)
         self.sinus_wave = SbkWave(wave=self.base_sinus_wave)
         self.stretched_wave = self.sinus_wave.stretch(2)
 
