@@ -1,4 +1,5 @@
-from com.sbk.dsp.sbkdsp import Sinusoid,  PI2
+from com.sbk.dsp.constants import PI2
+from com.sbk.dsp.sbkdsp import Sinusoid
 
 import numpy as np
 
