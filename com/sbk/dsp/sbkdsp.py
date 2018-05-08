@@ -7,11 +7,8 @@ from wave import open as open_wave
 import numpy as np
 
 from com.sbk.converter.converter import signal_to_wave
-from com.sbk.dsp.constants import PI2
-from com.sbk.func.unbias.unbias import unbias
 from com.sbk.signal.signal import SilentSignal
 from com.sbk.wave.wave import Wave
-from com.sbk.wave.wave_factory import WaveFactory
 
 try:
     from IPython.display import Audio
@@ -81,19 +78,6 @@ def read_wave(filename='sound.wav'):
     return wave
 
 
-def truncate(self, n):
-    """Trims this wave to the given length.
-
-    n: integer index
-    """
-    self.ys = truncate(self.ys, n)
-    self.ts = truncate(self.ts, n)
-
-
-def unbias(self):
-    """Unbiases the signal.
-    """
-    self.ys = unbias(self.ys)
 
 
 def play_wave(filename='sound.wav', player='aplay'):
@@ -107,19 +91,3 @@ def play_wave(filename='sound.wav', player='aplay'):
     popen.communicate()
 
 
-def find_index(self, t):
-    """Find the index corresponding to a given time."""
-    n = len(self)
-    start = self.start
-    end = self.end
-    i = round((n - 1) * (t - start) / (end - start))
-    return int(i)
-
-
-def zero_pad(self, n):
-    """Trims this wave to the given length.
-
-    n: integer index
-    """
-    self.ys = zero_pad(self.ys, n)
-    self.ts = self.start + np.arange(n) / self.framerate

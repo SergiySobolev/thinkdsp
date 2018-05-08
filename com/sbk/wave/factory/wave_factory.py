@@ -1,4 +1,4 @@
-from com.sbk.wave.iwave_factory import IWaveFactory
+from com.sbk.wave.factory.iwave_factory import IWaveFactory
 from com.sbk.wave.wave import Wave
 
 
