@@ -41,7 +41,6 @@ class Signal:
         wave = signal_to_wave(self, duration, start=0, frame_rate=frame_rate)
         wave.plot()
 
-
 class SumSignal(Signal):
     """Represents the sum of signals."""
 
@@ -77,14 +76,4 @@ class SumSignal(Signal):
         return sum(sig.evaluate(ts) for sig in self.signals)
 
 
-class SilentSignal(Signal):
-    """Represents silence."""
 
-    def evaluate(self, ts):
-        """Evaluates the signal at the given times.
-
-        ts: float array of times
-
-        returns: float wave array
-        """
-        return np.zeros(len(ts))

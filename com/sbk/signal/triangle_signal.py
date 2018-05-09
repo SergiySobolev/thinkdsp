@@ -1,10 +1,10 @@
 from com.sbk.dsp.constants import PI2
-from com.sbk.dsp.sbkdsp import Sinusoid
 
 import numpy as np
 
 from com.sbk.func.normalize.normalize import normalize
 from com.sbk.func.unbias.unbias import unbias
+from com.sbk.signal.sinusoid import Sinusoid
 
 
 class TriangleSignal(Sinusoid):

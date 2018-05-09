@@ -7,7 +7,7 @@ from wave import open as open_wave
 import numpy as np
 
 from com.sbk.converter.converter import signal_to_wave
-from com.sbk.signal.signal import SilentSignal
+from com.sbk.signal.silent_signal import SilentSignal
 from com.sbk.wave.wave import Wave
 
 try:
@@ -15,13 +15,6 @@ try:
 except:
     warnings.warn("Can't import Audio from IPython.display; "
                   "Wave.make_audio() will not work.")
-
-
-
-
-
-
-
 
 
 
