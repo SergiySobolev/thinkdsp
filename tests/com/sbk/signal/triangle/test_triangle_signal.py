@@ -1,7 +1,7 @@
 import unittest
 
 from com.sbk.converter.converter import signal_to_wave
-from com.sbk.signal.triangle_signal import TriangleSignal
+from com.sbk.signal.triangle.triangle_signal import TriangleSignal
 
 
 class TestTriangleSignal(unittest.TestCase):
