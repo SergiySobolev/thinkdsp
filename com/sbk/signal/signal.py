@@ -41,6 +41,7 @@ class Signal:
         wave = signal_to_wave(self, duration, start=0, frame_rate=frame_rate)
         wave.plot()
 
+
 class SumSignal(Signal):
     """Represents the sum of signals."""
 

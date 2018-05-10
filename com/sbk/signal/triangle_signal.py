@@ -21,5 +21,6 @@ class TriangleSignal(Sinusoid):
         cycles = self.freq * ts + self.offset / PI2
         frac, _ = np.modf(cycles)
         ys = np.abs(frac - 0.5)
-        ys = normalize(unbias(ys), self.amp)
+        ys = unbias(ys)
+        ys = normalize(ys, self.amp)
         return ys
