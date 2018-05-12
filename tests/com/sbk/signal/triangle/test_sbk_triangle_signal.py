@@ -25,7 +25,7 @@ class SbkTestTriangleSignal(unittest.TestCase):
     def test_triangle_signal_wave_len_have_to_be_equal_to_11025(self):
         self.assertEqual(len(self.wave), 500, "Wave length has to be equal to 11025")
 
-    @unittest.skip("Have to fix")
+    @unittest.skip("Ignore until Sbk Triangle Signal would be implemented")
     def test_triangle_signal_wave_elements(self):
         self.assertEqual(self.wave.ys[0], 1, "Wave has to start from 1")
         self.assertAlmostEqual(self.wave.ys[1], 0.9199999999)
