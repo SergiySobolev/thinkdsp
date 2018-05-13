@@ -2,7 +2,7 @@ import copy
 import numpy as np
 import scipy
 import thinkplot
-from com.sbk.func.findindex.find_index import find_index
+from com.sbk.func.findindex.find_index import find_index, find_index_s
 
 
 class _SpectrumParent:
@@ -109,7 +109,7 @@ class _SpectrumParent:
             fs, amps = self.render_full(high)
             thinkplot.plot(fs, amps, **options)
         else:
-            i = None if high is None else find_index(high, self.fs)
+            i = None if high is None else find_index_s(high, self.fs)
             thinkplot.plot(self.fs[:i], self.amps[:i], **options)
 
     def plot_power(self, high=None, **options):

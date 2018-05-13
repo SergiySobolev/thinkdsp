@@ -15,7 +15,6 @@ from com.sbk.func.quantize.quantize import quantize
 from com.sbk.func.truncate.truncate import truncate
 from com.sbk.func.unbias.unbias import unbias
 from com.sbk.func.zeropad.zero_pad import zero_pad
-from com.sbk.spectrum.spectrum import Spectrum
 from com.sbk.spectrum.spectrum_parent import _SpectrumParent
 from com.sbk.wave.iwave import IWave
 from wave import open as open_wave
@@ -304,23 +303,6 @@ class Wave(IWave):
         ys = self.ys[i:j].copy()
         ts = self.ts[i:j].copy()
         return Wave(ys, ts, self.frame_rate)
-
-    def make_spectrum(self, full=False):
-        """Computes the spectrum using FFT.
-
-        returns: Spectrum
-        """
-        n = len(self.ys)
-        d = 1 / self.frame_rate
-
-        if full:
-            hs = np.fft.fft(self.ys)
-            fs = np.fft.fftfreq(n, d)
-        else:
-            hs = np.fft.rfft(self.ys)
-            fs = np.fft.rfftfreq(n, d)
-
-        return Spectrum(hs, fs, self.frame_rate, full)
 
     def make_dct(self):
         """Computes the DCT of this wave.

@@ -142,19 +142,3 @@ class Spectrum(_SpectrumParent):
         cs = np.cumsum(self.power)
         cs /= cs[-1]
         return IntegratedSpectrum(cs, self.fs)
-
-    # def make_wave(self):
-    #     """Transforms to the time domain.
-    #
-    #     returns: Wave
-    #     """
-    #     if self.full:
-    #         ys = np.fft.ifft(self.hs)
-    #     else:
-    #         ys = np.fft.irfft(self.hs)
-    #
-    #     # NOTE: whatever the start time was, we lose it when
-    #     # we transform back; we could fix that by saving start
-    #     # time in the Spectrum
-    #     # ts = self.start + np.arange(len(ys)) / self.framerate
-    #     return Wave(ys, frame_rate=self.framerate)

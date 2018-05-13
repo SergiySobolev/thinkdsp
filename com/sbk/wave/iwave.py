@@ -166,14 +166,6 @@ class IWave(ABC):
         pass
 
     @abstractmethod
-    def make_spectrum(self, full=False):
-        """Computes the spectrum using FFT.
-
-        returns: Spectrum
-        """
-        pass
-
-    @abstractmethod
     def make_dct(self):
         """Computes the DCT of this wave.
         """
