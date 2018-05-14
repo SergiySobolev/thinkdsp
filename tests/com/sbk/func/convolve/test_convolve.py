@@ -8,6 +8,12 @@ from com.sbk.func.convolve.convolve import convolve
 
 class TestConvolve(unittest.TestCase):
 
+    def setUp(self):
+        self.x = range(0, 1000)
+        self.sin = np.sin(self.x)
+        self.lg = np.log(self.x)
+        self.signal = self.sin + self.lg
+
     def test_convolve(self):
         signal = [0, -1, -1.2, 2, 1.4, 1.4, 0.8, 0, -0.8]
         impulse_response = [1, 0.5, 0.2, 0]
