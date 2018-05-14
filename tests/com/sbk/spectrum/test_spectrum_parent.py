@@ -12,5 +12,6 @@ class TestSpectrumParent(unittest.TestCase):
         self.triangle_wave = signal_to_wave(self.triangle_signal)
         self.triangle_spectrum = wave_to_spectrum(self.triangle_wave)
 
+    @unittest.skip("define behaviour later")
     def test_spectrum_parent_plot(self):
         self.triangle_spectrum.plot(high=2000)
