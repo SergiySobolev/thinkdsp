@@ -48,4 +48,10 @@ class TestConvolve(unittest.TestCase):
         res = [0, 0, 3.0, 6.0, 9.0, 12.0, 15.0]
         npt.assert_array_equal(res, convolve(signal, impulse_response))
 
+    def test_convolve_with_echo_function(self):
+        signal = [1.0, 2.0, 3.0, 4.0, 5.0]
+        impulse_response = [1, 0, 0, 0.5]
+        res = [1.0, 2.0, 3.0, 4.5, 6.0, 1.5, 2.0, 2.5]
+        npt.assert_array_equal(res, convolve(signal, impulse_response))
+
 
