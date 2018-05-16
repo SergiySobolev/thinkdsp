@@ -22,6 +22,16 @@ def convolve_machine(signal, impulse_response):
             cur_signal_index = i - j
             if cur_signal_index < 0 or cur_signal_index >= signal_length:
                 continue
-            result[i] += signal[i-j] * impulse_response[j]
+            result[i] += signal[i - j] * impulse_response[j]
     return result
 
+
+def flipped_sub_signal(signal, index, length):
+    if index < length:
+        r = signal[0:index+1]
+        flipped_r = np.flip(r, axis=0)
+        zeros_to_add = length - index - 1
+        padded_r = np.pad(flipped_r, (0, zeros_to_add), 'constant')
+        return padded_r
+    else:
+        return np.flip(signal[index-length + 1:index+1], axis=0)
