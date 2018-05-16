@@ -36,3 +36,16 @@ class TestConvolve(unittest.TestCase):
         npt.assert_array_equal(res,
                                np.trim_zeros(convolve(signal, impulse_response), trim="b"))
 
+    def test_convolve_with_shift_function(self):
+        signal = [1.0, 2.0, 3.0, 4.0, 5.0]
+        impulse_response = [0, 0, 1]
+        res = [0, 0, 1.0, 2.0, 3.0, 4.0, 5.0]
+        npt.assert_array_equal(res, convolve(signal, impulse_response))
+
+    def test_convolve_with_shift_and_amply_function(self):
+        signal = [1.0, 2.0, 3.0, 4.0, 5.0]
+        impulse_response = [0, 0, 3]
+        res = [0, 0, 3.0, 6.0, 9.0, 12.0, 15.0]
+        npt.assert_array_equal(res, convolve(signal, impulse_response))
+
+
