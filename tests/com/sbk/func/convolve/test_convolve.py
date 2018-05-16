@@ -14,7 +14,7 @@ class TestConvolve(unittest.TestCase):
         self.lg = np.log(self.x)
         self.signal = self.sin + self.lg
 
-    def test_convolve(self):
+    def test_convolve_compare_with_numpy(self):
         signal = [0, -1, -1.2, 2, 1.4, 1.4, 0.8, 0, -0.8]
         impulse_response = [1, 0.5, 0.2, 0]
         res = convolve(signal, impulse_response)
@@ -22,3 +22,17 @@ class TestConvolve(unittest.TestCase):
         numpy_res = np.convolve(signal, impulse_response)
         npt.assert_array_equal(res, numpy_res)
         npt.assert_array_almost_equal(res, expected_res)
+
+    def test_convolve_with_delta_function(self):
+        signal = [1.0, 2.0, 3.0, 4.0, 5.0]
+        impulse_response = [1, 0, 0]
+        npt.assert_array_equal(signal,
+                               np.trim_zeros(convolve(signal, impulse_response), trim="b"))
+
+    def test_convolve_with_amplifier_function(self):
+        signal = [1.0, 2.0, 3.0, 4.0, 5.0]
+        impulse_response = [2, 0, 0]
+        res = [2.0, 4.0, 6.0, 8.0, 10.0]
+        npt.assert_array_equal(res,
+                               np.trim_zeros(convolve(signal, impulse_response), trim="b"))
+
