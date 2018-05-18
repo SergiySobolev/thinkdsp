@@ -30,3 +30,11 @@ class TestFlippedSubSignal(unittest.TestCase):
     def test_sub_signal_common_case(self):
         signal = [1, 2, 3, 4, 5, 6, 7]
         npt.assert_array_equal(flipped_sub_signal(signal, 4, 3), [5, 4, 3])
+
+    def test_sub_signal_index_larger_then_signal_length_1(self):
+        signal = [1, 2, 3, 4, 5, 6, 7]
+        npt.assert_array_equal(flipped_sub_signal(signal, 8, 4), [0, 0, 7, 6])
+
+    def test_sub_signal_index_larger_then_signal_length_2(self):
+        signal = [1, 2, 3, 4, 5, 6, 7]
+        npt.assert_array_equal(flipped_sub_signal(signal, 10, 4), [0, 0, 0, 0])
